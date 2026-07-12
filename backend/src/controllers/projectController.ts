@@ -115,3 +115,67 @@ export const getProjectById = async (
     }
 
 };
+export const updateProject = async (
+    req: AuthRequest,
+    res: Response
+) => {
+
+    try {
+
+        const { name, description } = req.body;
+
+
+        const project = await prisma.project.update({
+            where:{
+                id:Number(req.params.id)
+            },
+            data:{
+                name,
+                description
+            }
+        });
+
+
+        res.json({
+            message:"Project updated successfully",
+            project
+        });
+
+
+    } catch(error){
+
+        res.status(500).json({
+            message:"Server error"
+        });
+
+    }
+
+};
+export const deleteProject = async (
+    req: AuthRequest,
+    res: Response
+) => {
+
+    try {
+
+        await prisma.project.delete({
+            where:{
+                id:Number(req.params.id)
+            }
+        });
+
+
+        res.json({
+            message:"Project deleted successfully"
+        });
+
+
+    } catch(error){
+
+        res.status(500).json({
+            message:"Server error"
+        });
+
+    }
+
+};

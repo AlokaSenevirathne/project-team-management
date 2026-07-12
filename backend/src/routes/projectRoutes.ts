@@ -3,9 +3,10 @@ import express from "express";
 import {
     createProject,
     getProjects,
-    getProjectById
+    getProjectById,
+    updateProject,
+    deleteProject
 } from "../controllers/projectController";
-
 import {
     authenticate,
     authorize
@@ -37,6 +38,20 @@ router.get(
     "/:id",
     authenticate,
     getProjectById
+);
+router.put(
+    "/:id",
+    authenticate,
+    authorize("ADMIN","PROJECT_MANAGER"),
+    updateProject
+);
+
+
+router.delete(
+    "/:id",
+    authenticate,
+    authorize("ADMIN"),
+    deleteProject
 );
 
 
