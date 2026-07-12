@@ -68,3 +68,66 @@ export const register = async (
   }
 
 };
+export const login = async (
+  req: Request,
+  res: Response
+) => {
+
+  try {
+
+    const { email, password } = req.body;
+
+    const user = await prisma.user.findUnique({
+      where: {
+        email
+      }
+    });
+
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found"
+      });
+    }
+
+
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      user.password
+    );
+
+
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        message: "Invalid password"
+      });
+    }
+
+
+    const token = generateToken(
+      user.id,
+      user.role
+    );
+
+
+    res.json({
+      message: "Login successful",
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
+
+
+  } catch(error){
+
+    res.status(500).json({
+      message:"Server error"
+    });
+
+  }
+
+};
