@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+enum Role {
+  ADMIN
+  PROJECT_MANAGER
+  TEAM_MEMBER
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(TEAM_MEMBER)
+  createdAt DateTime @default(now())
+
+  projects  Project[] @relation("ProjectManager")
+  tasks     Task[]
+  comments  Comment[]
+  members   ProjectMember[]
+}
+
+model Project {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+
+  managerId   Int
+  manager     User     @relation("ProjectManager", fields: [managerId], references: [id])
+
+  members     ProjectMember[]
+  tasks       Task[]
+}
+
+model ProjectMember {
+  id        Int @id @default(autoincrement())
+
+  projectId Int
+  userId    Int
+
+  project   Project @relation(fields: [projectId], references: [id])
+  user      User    @relation(fields: [userId], references: [id])
+
+  @@unique([projectId, userId])
+}
+
+model Task {
+  id          Int        @id @default(autoincrement())
+  title       String
+  description String?
+  status      TaskStatus @default(TODO)
+  priority    Priority   @default(MEDIUM)
+  dueDate     DateTime?
+
+  projectId Int
+  assignedTo Int?
+
+  project Project @relation(fields: [projectId], references: [id])
+  user    User?   @relation(fields: [assignedTo], references: [id])
+
+  comments Comment[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+
+  taskId Int
+  userId Int
+
+  task Task @relation(fields: [taskId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+}
