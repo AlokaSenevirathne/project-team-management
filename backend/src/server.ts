@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes";
 import testRoutes from "./routes/testRoutes";
 import projectRoutes from "./routes/projectRoutes";
+import taskRoutes from "./routes/taskRoutes";
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/test", testRoutes);
 app.use("/api/projects", projectRoutes);
+app.use("/api/tasks", taskRoutes);
 
 app.get("/", (req, res) => {
   res.json({
