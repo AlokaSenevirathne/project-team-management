@@ -13,12 +13,14 @@ interface Task {
     description: string | null;
     status: string;
     priority: string;
+    dueDate?: string;
 
     project:{
         name:string;
     };
 
     user:{
+        id:number;
         name:string;
     } | null;
 
@@ -35,6 +37,12 @@ export default function TasksPage(){
     const [showForm,setShowForm] = useState(false);
 
 
+    const [editMode,setEditMode] = useState(false);
+
+    const [editingTaskId,setEditingTaskId] = useState<number | null>(null);
+
+
+
     const [title,setTitle] = useState("");
 
     const [description,setDescription] = useState("");
@@ -46,6 +54,7 @@ export default function TasksPage(){
     const [projectId,setProjectId] = useState("");
 
     const [assignedTo,setAssignedTo] = useState("");
+
 
 
 
@@ -71,11 +80,13 @@ export default function TasksPage(){
 
 
 
+
     useEffect(()=>{
 
         fetchTasks();
 
     },[]);
+
 
 
 
@@ -101,25 +112,198 @@ export default function TasksPage(){
 
                 projectId:Number(projectId),
 
-                assignedTo: assignedTo ? Number(assignedTo) : null
+                assignedTo: assignedTo 
+                    ? Number(assignedTo) 
+                    : null
 
             });
 
 
 
-            setTitle("");
+            clearForm();
 
-            setDescription("");
+            fetchTasks();
 
-            setPriority("MEDIUM");
 
-            setDueDate("");
 
-            setProjectId("");
+        }catch(error){
 
-            setAssignedTo("");
+            console.error(error);
 
-            setShowForm(false);
+        }
+
+
+    };
+
+
+
+
+
+
+    // Open Edit Form
+
+    const editTask = (task:Task)=>{
+
+
+        setEditMode(true);
+
+        setEditingTaskId(task.id);
+
+
+        setTitle(task.title);
+
+        setDescription(task.description ?? "");
+
+        setPriority(task.priority);
+
+
+        if(task.dueDate){
+
+            setDueDate(
+                task.dueDate.substring(0,10)
+            );
+
+        }
+
+
+        setShowForm(true);
+
+
+    };
+
+
+
+
+
+
+    // Update Task
+
+    const updateTask = async()=>{
+
+
+        try{
+
+
+            await api.put(
+                `/tasks/${editingTaskId}`,
+                {
+
+                    title,
+
+                    description,
+
+                    priority,
+
+                    dueDate,
+
+                    assignedTo: assignedTo
+                        ? Number(assignedTo)
+                        : null
+
+                }
+            );
+
+
+
+            clearForm();
+
+            fetchTasks();
+
+
+
+        }catch(error){
+
+            console.error(error);
+
+        }
+
+
+    };
+
+
+
+
+
+
+    // Clear Form
+
+    const clearForm = ()=>{
+
+
+        setTitle("");
+
+        setDescription("");
+
+        setPriority("MEDIUM");
+
+        setDueDate("");
+
+        setProjectId("");
+
+        setAssignedTo("");
+
+
+        setEditingTaskId(null);
+
+        setEditMode(false);
+
+        setShowForm(false);
+
+
+    };
+        // Update Task Status
+
+    const updateStatus = async (
+        id:number,
+        status:string
+    )=>{
+
+        try{
+
+            await api.put(
+                `/tasks/${id}/status`,
+                {
+                    status
+                }
+            );
+
+
+            fetchTasks();
+
+
+        }catch(error){
+
+            console.error(error);
+
+        }
+
+    };
+
+
+
+
+
+
+    // Delete Task
+
+    const deleteTask = async(id:number)=>{
+
+
+        const confirmed = window.confirm(
+            "Are you sure you want to delete this task?"
+        );
+
+
+        if(!confirmed) return;
+
+
+
+        try{
+
+
+            await api.delete(
+                `/tasks/${id}`
+            );
 
 
             fetchTasks();
@@ -178,9 +362,19 @@ export default function TasksPage(){
 
 
 
+
                         <button
 
-                            onClick={()=>setShowForm(!showForm)}
+                            onClick={()=>{
+
+                                if(showForm){
+                                    clearForm();
+                                }
+                                else{
+                                    setShowForm(true);
+                                }
+
+                            }}
 
                             className="bg-black text-white px-5 py-2 rounded"
 
@@ -191,6 +385,7 @@ export default function TasksPage(){
                         </button>
 
 
+
                     </div>
 
 
@@ -199,18 +394,29 @@ export default function TasksPage(){
 
 
 
-                    {/* Create Task Form */}
+                    {/* Task Form */}
 
 
                     {
                         showForm && (
 
+
                         <div className="bg-white rounded-xl shadow border p-6 mb-8">
 
 
                             <h2 className="text-xl font-semibold mb-4">
-                                Create New Task
+
+                                {
+                                    editMode
+                                    ?
+                                    "Edit Task"
+                                    :
+                                    "Create New Task"
+                                }
+
                             </h2>
+
+
 
 
 
@@ -222,9 +428,12 @@ export default function TasksPage(){
 
                                 value={title}
 
-                                onChange={(e)=>setTitle(e.target.value)}
+                                onChange={
+                                    (e)=>setTitle(e.target.value)
+                                }
 
                             />
+
 
 
 
@@ -237,7 +446,9 @@ export default function TasksPage(){
 
                                 value={description}
 
-                                onChange={(e)=>setDescription(e.target.value)}
+                                onChange={
+                                    (e)=>setDescription(e.target.value)
+                                }
 
                             />
 
@@ -245,17 +456,29 @@ export default function TasksPage(){
 
 
 
-                            <input
 
-                                className="border p-2 w-full mb-4 rounded"
+                            {
+                                !editMode && (
 
-                                placeholder="Project ID"
+                                <input
 
-                                value={projectId}
+                                    className="border p-2 w-full mb-4 rounded"
 
-                                onChange={(e)=>setProjectId(e.target.value)}
+                                    placeholder="Project ID"
 
-                            />
+                                    value={projectId}
+
+                                    onChange={
+                                        (e)=>setProjectId(e.target.value)
+                                    }
+
+                                />
+
+                                )
+
+                            }
+
+
 
 
 
@@ -269,9 +492,12 @@ export default function TasksPage(){
 
                                 value={assignedTo}
 
-                                onChange={(e)=>setAssignedTo(e.target.value)}
+                                onChange={
+                                    (e)=>setAssignedTo(e.target.value)
+                                }
 
                             />
+
 
 
 
@@ -284,7 +510,9 @@ export default function TasksPage(){
 
                                 value={priority}
 
-                                onChange={(e)=>setPriority(e.target.value)}
+                                onChange={
+                                    (e)=>setPriority(e.target.value)
+                                }
 
                             >
 
@@ -307,6 +535,9 @@ export default function TasksPage(){
 
 
 
+
+
+
                             <input
 
                                 type="date"
@@ -315,7 +546,9 @@ export default function TasksPage(){
 
                                 value={dueDate}
 
-                                onChange={(e)=>setDueDate(e.target.value)}
+                                onChange={
+                                    (e)=>setDueDate(e.target.value)
+                                }
 
                             />
 
@@ -323,24 +556,43 @@ export default function TasksPage(){
 
 
 
+
+
                             <button
 
-                                onClick={createTask}
+                                onClick={
+                                    editMode
+                                    ?
+                                    updateTask
+                                    :
+                                    createTask
+                                }
 
                                 className="bg-blue-600 text-white px-5 py-2 rounded"
 
                             >
 
-                                Save Task
+                                {
+                                    editMode
+                                    ?
+                                    "Save Changes"
+                                    :
+                                    "Save Task"
+                                }
+
 
                             </button>
 
 
 
+
                         </div>
 
+
                         )
+
                     }
+
 
 
 
@@ -357,7 +609,6 @@ export default function TasksPage(){
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
 
-
                     {
                         tasks.map((task)=>(
 
@@ -372,11 +623,14 @@ export default function TasksPage(){
 
 
 
+
                                 <h2 className="text-xl font-semibold">
 
                                     {task.title}
 
                                 </h2>
+
+
 
 
 
@@ -389,13 +643,65 @@ export default function TasksPage(){
 
 
 
+
+
+
+
+                                <div className="mt-4">
+
+
+                                    <label className="text-sm font-medium">
+
+                                        Status
+
+                                    </label>
+
+
+
+                                    <select
+
+                                        className="border rounded w-full mt-1 p-2"
+
+                                        value={task.status}
+
+                                        onChange={
+                                            (e)=>
+                                            updateStatus(
+                                                task.id,
+                                                e.target.value
+                                            )
+                                        }
+
+                                    >
+
+                                        <option value="TODO">
+                                            TODO
+                                        </option>
+
+
+                                        <option value="IN_PROGRESS">
+                                            IN PROGRESS
+                                        </option>
+
+
+                                        <option value="COMPLETED">
+                                            COMPLETED
+                                        </option>
+
+
+                                    </select>
+
+
+                                </div>
+
+
+
+
+
+
+
+
                                 <div className="mt-4 text-sm">
-
-
-                                    <p>
-                                        Status:
-                                        <b> {task.status}</b>
-                                    </p>
 
 
                                     <p>
@@ -405,18 +711,23 @@ export default function TasksPage(){
 
 
 
-                                    <p>
+                                    <p className="mt-2">
                                         Project:
                                         <b> {task.project.name}</b>
                                     </p>
 
 
 
-                                    <p>
+
+                                    <p className="mt-2">
                                         Assigned:
                                         <b>
                                             {" "}
-                                            {task.user?.name ?? "Not assigned"}
+                                            {
+                                                task.user?.name 
+                                                ??
+                                                "Not assigned"
+                                            }
                                         </b>
                                     </p>
 
@@ -425,15 +736,68 @@ export default function TasksPage(){
 
 
 
+
+
+
+
+
+
+                                <div className="flex gap-3 mt-6">
+
+
+                                    <button
+
+                                        onClick={()=>
+                                            editTask(task)
+                                        }
+
+                                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded"
+
+                                    >
+
+                                        Edit
+
+                                    </button>
+
+
+
+
+
+
+                                    <button
+
+                                        onClick={()=>
+                                            deleteTask(task.id)
+                                        }
+
+                                        className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded"
+
+                                    >
+
+                                        Delete
+
+                                    </button>
+
+
+
+                                </div>
+
+
+
+
+
+
                             </div>
 
 
                         ))
+
                     }
 
 
-
                     </div>
+
+
 
 
 
@@ -447,5 +811,6 @@ export default function TasksPage(){
         </div>
 
     );
+
 
 }
