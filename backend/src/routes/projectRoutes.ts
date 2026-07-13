@@ -5,7 +5,8 @@ import {
     getProjects,
     getProjectById,
     updateProject,
-    deleteProject
+    deleteProject,
+    addMember
 } from "../controllers/projectController";
 import {
     authenticate,
@@ -52,6 +53,13 @@ router.delete(
     authenticate,
     authorize("ADMIN"),
     deleteProject
+);
+// Assign team member to project
+router.post(
+    "/:projectId/members",
+    authenticate,
+    authorize("ADMIN","PROJECT_MANAGER"),
+    addMember
 );
 
 

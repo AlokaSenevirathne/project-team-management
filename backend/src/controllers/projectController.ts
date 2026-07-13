@@ -179,3 +179,41 @@ export const deleteProject = async (
     }
 
 };
+export const addMember = async (
+    req: AuthRequest,
+    res: Response
+) => {
+
+    try {
+
+        const { userId } = req.body;
+
+        const projectId = Number(req.params.projectId);
+
+
+        const member = await prisma.projectMember.create({
+            data:{
+                projectId,
+                userId
+            }
+        });
+
+
+        res.status(201).json({
+            message:"Member added successfully",
+            member
+        });
+
+
+    }catch(error){
+
+    console.log(error);
+
+    res.status(500).json({
+        message:"Server error",
+        error
+    });
+
+}
+
+};
