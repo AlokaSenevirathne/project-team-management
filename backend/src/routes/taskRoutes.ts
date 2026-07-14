@@ -70,5 +70,8 @@ router.put(
 );
 
 
+import commentRoutes from "./commentRoutes";
+router.use("/:taskId/comments", commentRoutes);
+
 
 export default router;
