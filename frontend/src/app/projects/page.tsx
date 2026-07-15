@@ -70,9 +70,10 @@ export default function ProjectsPage() {
     try {
       const response = await api.get("/projects");
       setProjects(response.data);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to fetch projects", error);
-      if (error.response?.status === 401) {
+      const err = error as { response?: { status?: number } };
+      if (err.response?.status === 401) {
         router.push("/");
       }
     }
@@ -97,7 +98,9 @@ export default function ProjectsPage() {
     }
 
     if (userData) {
-      setCurrentUser(JSON.parse(userData));
+      setTimeout(() => {
+        setCurrentUser(JSON.parse(userData));
+      }, 0);
     }
 
     const init = async () => {
@@ -107,6 +110,7 @@ export default function ProjectsPage() {
     };
 
     init();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
   const handleCreateProject = async (e: React.FormEvent) => {
@@ -124,9 +128,10 @@ export default function ProjectsPage() {
       setDescription("");
       setShowCreateModal(false);
       await fetchProjects();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error);
-      setFormError(error.response?.data?.message || "Failed to create project");
+      const err = error as { response?: { data?: { message?: string } } };
+      setFormError(err.response?.data?.message || "Failed to create project");
     }
   };
 
@@ -169,9 +174,10 @@ export default function ProjectsPage() {
       
       // Refresh list
       await fetchProjects();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error);
-      setMemberError(error.response?.data?.message || "Failed to add member");
+      const err = error as { response?: { data?: { message?: string } } };
+      setMemberError(err.response?.data?.message || "Failed to add member");
     }
   };
 

@@ -51,16 +51,17 @@ export default function DashboardPage() {
       setTaskCount(tasks.length);
       setMemberCount(users.length || 1); // fallback to 1 (self) if API is restricted
 
-      const completed = tasks.filter((task: any) => task.status === "COMPLETED").length;
+      const completed = tasks.filter((task: Task) => task.status === "COMPLETED").length;
       setCompletedCount(completed);
 
       // Get recent tasks (up to 4, sorted or just slice of outstanding tasks)
-      const pendingTasks = tasks.filter((task: any) => task.status !== "COMPLETED");
+      const pendingTasks = tasks.filter((task: Task) => task.status !== "COMPLETED");
       setRecentTasks(pendingTasks.slice(0, 4));
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error);
-      if (error.response?.status === 401) {
+      const err = error as { response?: { status?: number } };
+      if (err.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         router.push("/");
@@ -80,10 +81,13 @@ export default function DashboardPage() {
     }
 
     if (userData) {
-      setCurrentUser(JSON.parse(userData));
+      setTimeout(() => {
+        setCurrentUser(JSON.parse(userData));
+      }, 0);
     }
 
     fetchDashboardData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
   if (loading) {

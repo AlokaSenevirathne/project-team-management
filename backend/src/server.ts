@@ -12,7 +12,7 @@ import userRoutes from "./routes/userRoutes";
 dotenv.config();
 
 
-const app = express();
+export const app = express();
 
 
 app.use(cors());
@@ -52,10 +52,8 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-
-
-app.listen(PORT, () => {
-
-    console.log(`Server running on port ${PORT}`);
-
-});
+if (process.env.NODE_ENV !== "test") {
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}

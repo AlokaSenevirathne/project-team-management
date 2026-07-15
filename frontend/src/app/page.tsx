@@ -77,10 +77,11 @@ export default function AuthPage() {
         localStorage.setItem("user", JSON.stringify(response.data.user));
         router.push("/dashboard");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
+      const errorResponse = err as { response?: { data?: { message?: string } } };
       setError(
-        err.response?.data?.message || 
+        errorResponse.response?.data?.message || 
         "Authentication failed. Please verify your credentials."
       );
     } finally {
