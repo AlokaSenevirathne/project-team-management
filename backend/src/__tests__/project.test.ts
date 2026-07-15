@@ -2,6 +2,7 @@ import request from "supertest";
 import { app } from "../server";
 import prisma from "../utils/prisma";
 import bcrypt from "bcrypt";
+import { Role } from "@prisma/client";
 
 describe("Project and RBAC endpoints", () => {
   let adminToken = "";
@@ -15,9 +16,9 @@ describe("Project and RBAC endpoints", () => {
   let createdProjectId = 0;
 
   const testUsers = {
-    admin: { name: "Test Admin", email: "admin_test_999@taskflow.com", password: "adminpassword", role: "ADMIN" },
-    pm: { name: "Test PM", email: "pm_test_999@taskflow.com", password: "pmpassword", role: "PROJECT_MANAGER" },
-    member: { name: "Test Member", email: "member_test_999@taskflow.com", password: "memberpassword", role: "TEAM_MEMBER" },
+    admin: { name: "Test Admin", email: "admin_test_999@taskflow.com", password: "adminpassword", role: Role.ADMIN },
+    pm: { name: "Test PM", email: "pm_test_999@taskflow.com", password: "pmpassword", role: Role.PROJECT_MANAGER },
+    member: { name: "Test Member", email: "member_test_999@taskflow.com", password: "memberpassword", role: Role.TEAM_MEMBER },
   };
 
   beforeAll(async () => {
