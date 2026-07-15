@@ -44,11 +44,11 @@ export default function Navbar() {
   const getRoleColor = (role: string) => {
     switch (role) {
       case "ADMIN":
-        return "bg-rose-500/10 text-rose-400 border border-rose-500/20";
+        return "bg-red-50 text-red-700 border border-red-200";
       case "PROJECT_MANAGER":
-        return "bg-amber-500/10 text-amber-400 border border-amber-500/20";
+        return "bg-yellow-50 text-yellow-700 border border-yellow-200";
       default:
-        return "bg-blue-500/10 text-blue-400 border border-blue-500/20";
+        return "bg-blue-50 text-blue-700 border border-blue-200";
     }
   };
 
@@ -58,13 +58,13 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-slate-800 px-8 py-3.5 flex justify-between items-center text-white">
+    <header className="sticky top-0 z-50 bg-white border-b border-gray-200 px-8 py-3.5 flex justify-between items-center shadow-sm">
       {/* Brand Logo */}
       <div className="flex items-center gap-3">
-        <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold text-sm shadow-md shadow-blue-500/20">
+        <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-blue-600 text-white font-bold text-sm shadow-sm">
           TF
         </div>
-        <h1 className="text-lg font-bold tracking-tight bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+        <h1 className="text-lg font-bold tracking-tight text-gray-900">
           TaskFlow
         </h1>
       </div>
@@ -72,24 +72,24 @@ export default function Navbar() {
       {/* User Profile & Actions */}
       <div className="flex items-center gap-6">
         {user && (
-          <div className="flex items-center gap-3 pr-4 border-r border-slate-800">
+          <div className="flex items-center gap-3 pr-4 border-r border-gray-200">
             {/* Avatar */}
-            <div className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-bold text-blue-400">
+            <div className="w-9 h-9 rounded-full bg-gray-200 border border-gray-300 flex items-center justify-center text-xs font-bold text-gray-700">
               {getInitials(user.name)}
             </div>
 
             {/* Profile Info */}
             <div className="hidden md:flex flex-col text-left">
-              <span className="text-sm font-semibold leading-none text-slate-200">
+              <span className="text-sm font-semibold leading-none text-gray-900">
                 {user.name}
               </span>
-              <span className="text-[10px] text-slate-400 mt-1 leading-none">
+              <span className="text-xs text-gray-500 mt-1 leading-none">
                 {user.email}
               </span>
             </div>
 
             {/* Role Badge */}
-            <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${getRoleColor(user.role)}`}>
+            <span className={`text-xs px-2 py-0.5 rounded-full font-medium uppercase ${getRoleColor(user.role)}`}>
               {formatRole(user.role)}
             </span>
           </div>
@@ -98,7 +98,7 @@ export default function Navbar() {
         {/* Logout Button */}
         <button
           onClick={logout}
-          className="flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-white transition-smooth bg-slate-800/50 hover:bg-slate-800 px-3.5 py-1.5 rounded-lg border border-slate-800 cursor-pointer"
+          className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors bg-gray-100 hover:bg-gray-200 px-3.5 py-1.5 rounded-lg border border-gray-200 cursor-pointer"
         >
           {/* Logout SVG Icon */}
           <svg

@@ -28,16 +28,16 @@ export default function Sidebar() {
   };
 
   const linkClass = (path: string) => {
-    return `flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold transition-smooth border border-transparent ${
+    return `flex items-center gap-3.5 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
       isActive(path)
-        ? "bg-blue-600 text-white shadow-md shadow-blue-500/10"
-        : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
+        ? "bg-blue-50 text-blue-700 border border-blue-200"
+        : "text-gray-600 hover:text-gray-900 hover:bg-gray-100 border border-transparent"
     }`;
   };
 
   return (
-    <aside className="w-64 bg-slate-900 border-r border-slate-800 text-white min-h-[calc(100vh-68px)] p-5 flex flex-col gap-6">
-      <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-4">
+    <aside className="w-64 bg-white border-r border-gray-200 min-h-[calc(100vh-68px)] p-5 flex flex-col gap-6">
+      <div className="text-xs font-medium text-gray-500 uppercase tracking-wider px-4">
         Navigation Menu
       </div>
 

@@ -314,57 +314,59 @@ export default function TasksPage() {
   const getPriorityColor = (pri: string) => {
     switch (pri) {
       case "HIGH":
-        return "bg-rose-500/10 text-rose-400 border border-rose-500/20";
+        return "bg-red-50 text-red-700 border border-red-200";
       case "MEDIUM":
-        return "bg-amber-500/10 text-amber-400 border border-amber-500/20";
+        return "bg-yellow-50 text-yellow-700 border border-yellow-200";
       default:
-        return "bg-blue-500/10 text-blue-400 border border-blue-500/20";
+        return "bg-blue-50 text-blue-700 border border-blue-200";
     }
   };
 
   // Status Columns
   const columns = [
-    { id: "TODO", title: "To Do", color: "border-slate-800 bg-slate-900/10" },
-    { id: "IN_PROGRESS", title: "In Progress", color: "border-blue-800 bg-blue-900/5" },
-    { id: "COMPLETED", title: "Completed", color: "border-emerald-800 bg-emerald-900/5" },
+    { id: "TODO", title: "To Do", color: "border-gray-200 bg-gray-50" },
+    { id: "IN_PROGRESS", title: "In Progress", color: "border-blue-200 bg-blue-50/30" },
+    { id: "COMPLETED", title: "Completed", color: "border-green-200 bg-green-50/30" },
   ];
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 border-4 border-blue-600/30 border-t-blue-500 rounded-full animate-spin"></div>
-          <p className="text-slate-400 text-sm font-medium">Loading Tasks Board...</p>
+          <div className="w-10 h-10 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin"></div>
+          <p className="text-gray-500 text-sm font-medium">Loading Tasks Board...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-gray-50 text-gray-900 flex flex-col">
       <Navbar />
 
       <div className="flex flex-1">
         <Sidebar />
 
-        <main className="flex-1 p-8 space-y-8 max-w-7xl mx-auto w-full">
+        <main className="flex-1 p-8 space-y-6 max-w-7xl mx-auto w-full">
           {/* Header */}
-          <div className="flex justify-between items-center bg-slate-900/40 p-6 rounded-2xl border border-slate-800">
-            <div>
-              <h2 className="text-2xl font-extrabold text-white tracking-tight">
-                Tasks Board
-              </h2>
-              <p className="text-slate-400 text-sm mt-1">
-                Visual Kanban board tracking and comment discussions
-              </p>
+          <div className="bg-white border border-gray-200 p-6 rounded-lg shadow-sm">
+            <div className="flex justify-between items-center">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Tasks Board
+                </h2>
+                <p className="text-gray-600 text-sm mt-1">
+                  Visual Kanban board tracking and comment discussions
+                </p>
+              </div>
+              
+              <button
+                onClick={openCreateMode}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg shadow-sm hover:shadow transition-colors flex items-center gap-2 text-sm cursor-pointer"
+              >
+                <span>+</span> Create Task
+              </button>
             </div>
-            
-            <button
-              onClick={openCreateMode}
-              className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 px-4 rounded-xl shadow-lg shadow-blue-500/10 transition-smooth flex items-center gap-2 text-sm cursor-pointer"
-            >
-              <span>+</span> Create Task
-            </button>
           </div>
 
           {/* Kanban Board Grid */}
@@ -374,43 +376,43 @@ export default function TasksPage() {
               return (
                 <div
                   key={col.id}
-                  className={`border rounded-2xl p-5 flex flex-col space-y-4 min-h-[500px] ${col.color}`}
+                  className={`border rounded-lg p-5 flex flex-col space-y-4 min-h-[500px] ${col.color}`}
                 >
                   {/* Column Header */}
-                  <div className="flex justify-between items-center pb-2 border-b border-slate-850">
-                    <span className="font-extrabold text-sm text-slate-300">
+                  <div className="flex justify-between items-center pb-2 border-b border-gray-200">
+                    <span className="font-semibold text-sm text-gray-700">
                       {col.title}
                     </span>
-                    <span className="text-[10px] px-2 py-0.5 bg-slate-850 rounded-full text-slate-400 font-bold border border-slate-700/50">
+                    <span className="text-xs px-2 py-0.5 bg-white rounded-full text-gray-600 font-medium border border-gray-200">
                       {columnTasks.length}
                     </span>
                   </div>
 
                   {/* Task list container */}
-                  <div className="flex-1 overflow-y-auto space-y-3 pr-1 max-h-[600px] custom-scroll">
+                  <div className="flex-1 overflow-y-auto space-y-3 pr-1 max-h-[600px]">
                     {columnTasks.length > 0 ? (
                       columnTasks.map((task) => (
                         <div
                           key={task.id}
                           onClick={() => openTaskDetails(task)}
-                          className="bg-slate-900 border border-slate-800/80 hover:border-slate-750 p-4 rounded-xl shadow-premium cursor-pointer transition-smooth space-y-4 hover:-translate-y-0.5"
+                          className="bg-white border border-gray-200 hover:border-gray-300 p-4 rounded-lg shadow-sm hover:shadow transition-all cursor-pointer space-y-3"
                         >
                           <div className="space-y-1">
                             <div className="flex justify-between items-start gap-4">
-                              <h4 className="font-extrabold text-sm text-slate-200 line-clamp-1">
+                              <h4 className="font-semibold text-sm text-gray-900 line-clamp-1">
                                 {task.title}
                               </h4>
-                              <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wide shrink-0 ${getPriorityColor(task.priority)}`}>
+                              <span className={`text-xs font-medium px-2 py-0.5 rounded uppercase shrink-0 ${getPriorityColor(task.priority)}`}>
                                 {task.priority}
                               </span>
                             </div>
-                            <p className="text-xs text-slate-400 line-clamp-2">
+                            <p className="text-sm text-gray-600 line-clamp-2">
                               {task.description || "No task description provided."}
                             </p>
                           </div>
 
                           {/* Info chips */}
-                          <div className="pt-3 border-t border-slate-850 flex items-center justify-between text-[9px] font-bold text-slate-500">
+                          <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
                             <span className="truncate max-w-[120px]">
                               📂 {task.project.name}
                             </span>
@@ -424,7 +426,7 @@ export default function TasksPage() {
                             {col.id !== "TODO" && (
                               <button
                                 onClick={() => handleUpdateStatus(task.id, col.id === "COMPLETED" ? "IN_PROGRESS" : "TODO")}
-                                className="flex-1 py-1.5 bg-slate-850 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800 rounded-lg text-[9px] font-bold transition-smooth cursor-pointer"
+                                className="flex-1 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 border border-gray-200 rounded-lg text-xs font-medium transition-colors cursor-pointer"
                               >
                                 ◀ Move Back
                               </button>
@@ -432,7 +434,7 @@ export default function TasksPage() {
                             {col.id !== "COMPLETED" && (
                               <button
                                 onClick={() => handleUpdateStatus(task.id, col.id === "TODO" ? "IN_PROGRESS" : "COMPLETED")}
-                                className="flex-1 py-1.5 bg-blue-600/10 hover:bg-blue-600 text-blue-400 hover:text-white border border-blue-600/20 rounded-lg text-[9px] font-bold transition-smooth cursor-pointer"
+                                className="flex-1 py-1.5 bg-blue-50 hover:bg-blue-600 text-blue-600 hover:text-white border border-blue-200 rounded-lg text-xs font-medium transition-colors cursor-pointer"
                               >
                                 {col.id === "TODO" ? "Start Task ▶" : "Complete Task ▶"}
                               </button>
@@ -441,7 +443,7 @@ export default function TasksPage() {
                         </div>
                       ))
                     ) : (
-                      <div className="h-full flex items-center justify-center text-center py-16 text-slate-600 text-xs border-2 border-slate-850 border-dashed rounded-xl">
+                      <div className="h-full flex items-center justify-center text-center py-16 text-gray-400 text-sm border-2 border-gray-200 border-dashed rounded-lg">
                         No tasks in this board column
                       </div>
                     )}
@@ -453,21 +455,21 @@ export default function TasksPage() {
 
           {/* Task Detail Modal with Comments */}
           {showDetailModal && selectedTask && (
-            <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-              <div className="bg-slate-900 border border-slate-800 w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[85vh] animate-in fade-in zoom-in-95 duration-200">
+            <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+              <div className="bg-white border border-gray-200 w-full max-w-4xl rounded-lg shadow-xl overflow-hidden flex flex-col md:flex-row max-h-[85vh]">
                 
                 {/* Left Side: Details & Actions */}
-                <div className="flex-1 p-6 border-r border-slate-800 space-y-6 overflow-y-auto">
+                <div className="flex-1 p-6 border-r border-gray-200 space-y-6 overflow-y-auto">
                   <div className="flex justify-between items-start">
                     <div>
-                      <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">
+                      <span className="text-xs font-medium uppercase tracking-wider text-gray-500">
                         Task Details
                       </span>
-                      <h3 className="text-xl font-extrabold text-white mt-1">
+                      <h3 className="text-xl font-bold text-gray-900 mt-1">
                         {selectedTask.title}
                       </h3>
-                      <p className="text-xs text-slate-400 mt-1">
-                        Project: <span className="font-semibold text-slate-300">{selectedTask.project.name}</span>
+                      <p className="text-sm text-gray-600 mt-1">
+                        Project: <span className="font-semibold text-gray-900">{selectedTask.project.name}</span>
                       </p>
                     </div>
 
@@ -479,14 +481,14 @@ export default function TasksPage() {
                               openEditMode(selectedTask);
                               setShowDetailModal(false);
                             }}
-                            className="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white p-2 rounded-xl border border-slate-700/50 transition-smooth cursor-pointer"
+                            className="bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 p-2 rounded-lg border border-gray-200 transition-colors cursor-pointer"
                             title="Edit Task"
                           >
                             ✏️
                           </button>
                           <button
                             onClick={() => handleDeleteTask(selectedTask.id)}
-                            className="bg-slate-800 hover:bg-rose-950 text-slate-350 hover:text-rose-400 p-2 rounded-xl border border-slate-700/50 transition-smooth cursor-pointer"
+                            className="bg-gray-100 hover:bg-red-50 text-gray-600 hover:text-red-600 p-2 rounded-lg border border-gray-200 transition-colors cursor-pointer"
                             title="Delete Task"
                           >
                             🗑️
@@ -497,21 +499,21 @@ export default function TasksPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                    <h4 className="text-sm font-semibold text-gray-700">
                       Description
                     </h4>
-                    <p className="text-sm text-slate-350 bg-slate-950/30 p-4 rounded-xl border border-slate-850 leading-relaxed">
+                    <p className="text-sm text-gray-600 bg-gray-50 p-4 rounded-lg border border-gray-200 leading-relaxed">
                       {selectedTask.description || "No description provided."}
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-850 text-xs">
+                  <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200 text-sm">
                     <div>
-                      <span className="block text-[10px] font-bold text-slate-500 uppercase">
+                      <span className="block text-xs font-medium text-gray-500 uppercase">
                         Status
                       </span>
                       <select
-                        className="bg-slate-950 border border-slate-800 text-slate-300 px-3 py-1.5 rounded-lg mt-1 font-semibold focus:outline-none w-full"
+                        className="bg-white border border-gray-300 text-gray-900 px-3 py-1.5 rounded-lg mt-1 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                         value={selectedTask.status}
                         onChange={(e) => handleUpdateStatus(selectedTask.id, e.target.value)}
                       >
@@ -522,29 +524,29 @@ export default function TasksPage() {
                     </div>
 
                     <div>
-                      <span className="block text-[10px] font-bold text-slate-500 uppercase">
+                      <span className="block text-xs font-medium text-gray-500 uppercase">
                         Priority
                       </span>
-                      <span className={`inline-block text-[10px] font-black px-2.5 py-1 rounded mt-1.5 uppercase ${getPriorityColor(selectedTask.priority)}`}>
+                      <span className={`inline-block text-xs font-medium px-2.5 py-1 rounded mt-1 uppercase ${getPriorityColor(selectedTask.priority)}`}>
                         {selectedTask.priority}
                       </span>
                     </div>
 
                     <div>
-                      <span className="block text-[10px] font-bold text-slate-500 uppercase">
+                      <span className="block text-xs font-medium text-gray-500 uppercase">
                         Assigned To
                       </span>
-                      <span className="block text-slate-300 font-bold mt-1.5">
+                      <span className="block text-gray-900 font-medium mt-1">
                         👤 {selectedTask.user?.name || "Not assigned"}
                       </span>
                     </div>
 
                     {selectedTask.dueDate && (
                       <div>
-                        <span className="block text-[10px] font-bold text-slate-500 uppercase">
+                        <span className="block text-xs font-medium text-gray-500 uppercase">
                           Due Date
                         </span>
-                        <span className="block text-slate-300 font-semibold mt-1.5">
+                        <span className="block text-gray-900 font-medium mt-1">
                           📅 {selectedTask.dueDate.substring(0, 10)}
                         </span>
                       </div>
@@ -553,9 +555,9 @@ export default function TasksPage() {
                 </div>
 
                 {/* Right Side: Comments pane */}
-                <div className="w-full md:w-96 p-6 bg-slate-900/50 flex flex-col max-h-[85vh]">
-                  <div className="flex justify-between items-center pb-3 border-b border-slate-800">
-                    <h4 className="font-extrabold text-sm text-slate-300">
+                <div className="w-full md:w-96 p-6 bg-gray-50 flex flex-col max-h-[85vh]">
+                  <div className="flex justify-between items-center pb-3 border-b border-gray-200">
+                    <h4 className="font-semibold text-sm text-gray-700">
                       Discussions ({comments.length})
                     </h4>
                     <button
@@ -564,46 +566,46 @@ export default function TasksPage() {
                         setSelectedTask(null);
                         setComments([]);
                       }}
-                      className="text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 px-2 py-0.5 rounded cursor-pointer"
+                      className="text-gray-400 hover:text-gray-600 bg-white hover:bg-gray-100 px-2 py-0.5 rounded cursor-pointer"
                     >
                       ✕
                     </button>
                   </div>
 
                   {/* Comments Feed */}
-                  <div className="flex-1 overflow-y-auto py-4 space-y-4 max-h-[350px] custom-scroll">
+                  <div className="flex-1 overflow-y-auto py-4 space-y-4 max-h-[350px]">
                     {comments.length > 0 ? (
                       comments.map((c) => (
-                        <div key={c.id} className="space-y-1.5 text-xs bg-slate-950/20 p-3 rounded-xl border border-slate-850">
-                          <div className="flex justify-between items-center text-[10px] font-bold">
-                            <span className="text-blue-400">{c.user.name}</span>
+                        <div key={c.id} className="space-y-1.5 text-sm bg-white p-3 rounded-lg border border-gray-200">
+                          <div className="flex justify-between items-center text-xs font-medium">
+                            <span className="text-blue-600">{c.user.name}</span>
                             <div className="flex items-center gap-2">
-                              <span className="text-slate-500">{c.createdAt.substring(0, 10)}</span>
+                              <span className="text-gray-500">{c.createdAt.substring(0, 10)}</span>
                               {(currentUser?.role === "ADMIN" || currentUser?.id === c.userId) && (
                                 <button
                                   onClick={() => handleDeleteComment(c.id)}
-                                  className="text-slate-500 hover:text-rose-400 cursor-pointer"
+                                  className="text-gray-400 hover:text-red-600 cursor-pointer"
                                 >
                                   ✕
                                 </button>
                               )}
                             </div>
                           </div>
-                          <p className="text-slate-300 leading-normal">{c.content}</p>
+                          <p className="text-gray-700 leading-normal">{c.content}</p>
                         </div>
                       ))
                     ) : (
-                      <div className="text-center py-10 text-slate-500 text-xs">
+                      <div className="text-center py-10 text-gray-500 text-sm">
                         No comment history yet. Type below to start discussion.
                       </div>
                     )}
                   </div>
 
                   {/* Add Comment Input */}
-                  <form onSubmit={handleAddComment} className="pt-3 border-t border-slate-800 flex gap-2">
+                  <form onSubmit={handleAddComment} className="pt-3 border-t border-gray-200 flex gap-2">
                     <input
                       type="text"
-                      className="flex-1 bg-slate-950 border border-slate-800 text-xs px-3.5 py-2 rounded-xl text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      className="flex-1 bg-white border border-gray-300 text-sm px-3.5 py-2 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Discuss task status..."
                       value={newCommentText}
                       onChange={(e) => setNewCommentText(e.target.value)}
@@ -611,7 +613,7 @@ export default function TasksPage() {
                     <button
                       type="submit"
                       disabled={commentLoading}
-                      className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-3 py-2 rounded-xl shadow transition-smooth cursor-pointer"
+                      className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-3 py-2 rounded-lg shadow-sm transition-colors cursor-pointer"
                     >
                       Post
                     </button>
@@ -624,37 +626,37 @@ export default function TasksPage() {
 
           {/* Create/Edit Task Modal */}
           {showFormModal && (
-            <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
               <form
                 onSubmit={handleCreateOrUpdateTask}
-                className="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl shadow-2xl p-6 space-y-5 animate-in fade-in zoom-in-95 duration-200"
+                className="bg-white border border-gray-200 w-full max-w-md rounded-lg shadow-xl p-6 space-y-5"
               >
-                <div className="flex justify-between items-center border-b border-slate-800 pb-3">
-                  <h3 className="text-lg font-bold text-white">
+                <div className="flex justify-between items-center border-b border-gray-200 pb-3">
+                  <h3 className="text-lg font-bold text-gray-900">
                     {editMode ? "Edit Task" : "Create New Task"}
                   </h3>
                   <button
                     type="button"
                     onClick={clearForm}
-                    className="text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 p-1 rounded transition-smooth cursor-pointer"
+                    className="text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 p-1 rounded transition-colors cursor-pointer"
                   >
                     ✕
                   </button>
                 </div>
 
                 {formError && (
-                  <p className="bg-rose-500/10 border border-rose-500/20 text-rose-400 p-2 rounded-lg text-xs font-semibold">
+                  <p className="bg-red-50 border border-red-200 text-red-700 p-2 rounded-lg text-sm font-medium">
                     {formError}
                   </p>
                 )}
 
                 <div className="space-y-1">
-                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">
+                  <label className="block text-sm font-medium text-gray-700">
                     Task Title
                   </label>
                   <input
                     type="text"
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent transition-smooth"
+                    className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                     placeholder="e.g. Implement API"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
@@ -662,12 +664,12 @@ export default function TasksPage() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">
+                  <label className="block text-sm font-medium text-gray-700">
                     Description
                   </label>
                   <textarea
                     rows={3}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent transition-smooth"
+                    className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                     placeholder="Provide description..."
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
@@ -675,12 +677,12 @@ export default function TasksPage() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">
+                  <label className="block text-sm font-medium text-gray-700">
                     Assign Project
                   </label>
                   <select
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-slate-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    disabled={editMode} // project cannot be changed once task is created to keep relations intact
+                    className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    disabled={editMode}
                     value={projectId}
                     onChange={(e) => setProjectId(e.target.value)}
                   >
@@ -694,11 +696,11 @@ export default function TasksPage() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">
+                  <label className="block text-sm font-medium text-gray-700">
                     Assign Member
                   </label>
                   <select
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-slate-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     value={assignedTo}
                     onChange={(e) => setAssignedTo(e.target.value)}
                     disabled={!projectId}
@@ -711,7 +713,7 @@ export default function TasksPage() {
                     ))}
                   </select>
                   {!projectId && (
-                    <p className="text-[10px] text-slate-500 mt-1">
+                    <p className="text-xs text-gray-500 mt-1">
                       * Select a project first to see eligible project members.
                     </p>
                   )}
@@ -719,11 +721,11 @@ export default function TasksPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">
+                    <label className="block text-sm font-medium text-gray-700">
                       Priority
                     </label>
                     <select
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-slate-350 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       value={priority}
                       onChange={(e) => setPriority(e.target.value)}
                     >
@@ -734,29 +736,29 @@ export default function TasksPage() {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">
+                    <label className="block text-sm font-medium text-gray-700">
                       Due Date
                     </label>
                     <input
                       type="date"
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-slate-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       value={dueDate}
                       onChange={(e) => setDueDate(e.target.value)}
                     />
                   </div>
                 </div>
 
-                <div className="flex justify-end gap-3 pt-3 border-t border-slate-800">
+                <div className="flex justify-end gap-3 pt-3 border-t border-gray-200">
                   <button
                     type="button"
                     onClick={clearForm}
-                    className="px-4 py-2 border border-slate-800 text-slate-400 hover:text-white rounded-xl text-xs font-bold hover:bg-slate-800 transition-smooth cursor-pointer"
+                    className="px-4 py-2 border border-gray-300 text-gray-700 hover:text-gray-900 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-smooth shadow-md shadow-blue-500/10 cursor-pointer"
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm cursor-pointer"
                   >
                     {editMode ? "Save Changes" : "Save Task"}
                   </button>
